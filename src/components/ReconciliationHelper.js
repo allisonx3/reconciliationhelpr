@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { processTransactions, processDailyTransactions } from '../utils/csvProcessor';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 // ReconciliationHelper component for displaying and managing reconciliation results
 // Accepts bankData and ynabData as CSV strings 
 
-function ReconciliationHelper({ bankData, ynabData }) {
+function ReconciliationHelper({ bankData, ynabData, onStartOver }) {
   // State variables for managing transactions and selected date
   const [transactions, setTransactions] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('all');
+  const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState('all');
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Process transaction data when component mounts or data changes
   useEffect(() => {
@@ -34,35 +39,109 @@ function ReconciliationHelper({ bankData, ynabData }) {
     }
   }, [bankData, ynabData]);
 
-  // Filter transactions based on selected date
-  const filteredTransactions = selectedDate === 'all' 
-    ? transactions 
-    : transactions.filter(t => t.date === selectedDate);
+  useEffect(() => {
+    // Function to handle scroll
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
 
-  // Get unique dates for the dropdown
-  const dates = ['all', ...new Set(transactions.map(t => t.date))];
+    // Function to scroll to top
+    const scrollToTop = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    };
+
+    // Add scroll event listener
+    window.addEventListener('scroll', toggleVisibility);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('scroll', toggleVisibility);
+    };
+  }, []);
+
+  // get available dates from datepicker
+  const availableDates = [...new Set(transactions.map(t => new Date(t.date)))];
 
 
+  // Filter transactions based on selected date and filter type
+  const filteredTransactions = transactions
+    .filter(t => !selectedDate || t.date === selectedDate.toLocaleDateString('en-US'))
+    .filter(day => {
+      switch (filterType) {
+        case 'unmatched':
+          return day.unmatchedBankCount > 0 || day.unmatchedYnabCount > 0;
+        case 'matched':
+          return day.unmatchedBankCount === 0 && day.unmatchedYnabCount === 0;
+        default:
+          return true;
+      }
+    });
+
+  // Custom date input for nicer formatting
+  const CustomDateInput = React.forwardRef(({ value, onClick }, ref) => (
+    <button 
+      className="date-picker-button"
+      onClick={(e) => {
+        e.preventDefault();
+        setIsDatePickerOpen(!isDatePickerOpen);
+      }}
+      ref={ref}
+    >
+      {value || 'All Dates'}
+    </button>
+  ));
   //show loading state while processing transactions
   if (loading) {
     return <div>Loading transactions...</div>;
   }
+
+  // handle the click on scroll to top
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   // Render the reconciliation helper component
   return (
     <div className="reconciliation-helper">
       {/* Dropdown for selecting a specific date */}
       <div className="controls">
-        <select 
-          value={selectedDate} 
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="date-select"
-        >
-          <option value="all">All Dates</option>
-          {dates.filter(d => d !== 'all').map(date => (
-            <option key={date} value={date}>{date}</option>
-          ))}
-        </select>
+      {/* Date filter with DatePicker */}
+        <DatePicker
+            selected={selectedDate}
+            onChange={(date) => {
+                setSelectedDate(date);
+                setIsDatePickerOpen(false);  // Close after selection
+            }}
+            customInput={<CustomDateInput />}
+            includeDates={availableDates}
+            isClearable={true}
+            placeholderText="All Dates"
+            dateFormat="MM/dd/yyyy"
+            open={isDatePickerOpen}
+            onClickOutside={() => setIsDatePickerOpen(false)}  // Close when clicking outside
+            />
+        {/* filter for matched/unmatched */}
+        <div className="select-wrapper">
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="filter-select"
+          >
+            <option value="all">Matched/Unmatched</option>
+            <option value="unmatched">Only Days with Mismatches</option>
+            <option value="matched">Only Fully Matched Days</option>
+          </select>
+        </div>
       </div>
 
         {/* Transaction list grouped by date */}
@@ -76,7 +155,9 @@ function ReconciliationHelper({ bankData, ynabData }) {
             return (
               <div 
                 key={day.date} 
-                className={`day-transactions ${hasDiscrepancy ? 'has-discrepancy' : ''}`}
+                className={`day-transactions ${hasDiscrepancy ? 'has-discrepancy' : ''} ${
+                  day.unmatchedBankCount === 0 && day.unmatchedYnabCount === 0 ? 'all-matched' : ''
+                }`}
               >
                 {/* Display the date and total amounts */}
                 <h3>
@@ -140,6 +221,20 @@ function ReconciliationHelper({ bankData, ynabData }) {
             );
           })}
         </div>
+
+      {/* back to home essentially */}
+      <button onClick={onStartOver} className="secondary-gradient-button">
+        <span>↑</span> Upload Different Files
+      </button>
+
+      {/* back to top button */}
+      <button 
+        className={`back-to-top ${isVisible ? 'visible' : ''}`}
+        onClick={scrollToTop}
+        aria-label="Back to top"
+      >
+        ↑
+      </button>
     </div>
   );
 }

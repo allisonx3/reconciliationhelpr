@@ -1,13 +1,15 @@
 /* Usage Notice Styles */
 .usage-notice {
     margin-top: 2rem;
-    background: white;
-    border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    background: var(--surface-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
     border: 1px solid var(--border-color);
-  }
-  
-  .notice-header {
+    width: 100%;
+    max-width: 100%;
+}
+
+.notice-header {
     padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
@@ -28,13 +30,13 @@
     color: var(--text-secondary);
     cursor: pointer;
     padding: 0.5rem;
-  }
-  
-  .notice-content {
+}
+
+.notice-content {
     padding: 1rem;
-  }
-  
-  .notice-item {
+}
+
+.notice-item {
     margin-bottom: 1.5rem;
 }
 

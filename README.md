@@ -2,7 +2,7 @@
 
 A locally-run tool to help YNAB users who are as bad at reconciling as I am to identify discrepancies between their bank statements and YNAB transactions. This isn't an automatic reconciliation tool - rather, it's a helper that makes it easier to spot where things don't match up.
 
-> **Quick Note:** Yes, we should reconcile daily/weekly/monthly/etc.It's definitely best practice. But if you're like me and sometimes forget to eat lunch because ADHD/life/whatever, well... this tool is for those months when you finally check your balance and go "oh no. why is this $40 off?" You'll certainly get no judgement from me - you're doing your best <3
+> **Quick Note:** Yes, we should reconcile daily/weekly/monthly/etc.It's definitely best practice. But if you're like me and sometimes forget to eat lunch because ADHD/life/whatever, well... this tool is for those months when you finally check your balance and go "oh no. why is this $40 off?" You'll get no judgement from me - you're doing your best <3
 
 
 ## Why Use This?
@@ -22,12 +22,14 @@ ReconciliationHelpr makes this process a little faster and less error-prone. (At
 - 💰 Daily totals and difference calculations
 - 🚦 Visual indicators for discrepancies
 - 🔒 Completely local processing (no data leaves your computer)
+- 🌓 Dark mode support with system preference detection
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js installed on your computer
-- Basic familiarity with YNAB and CSV exports
+- Git installed on your computer
+- CSV files from your bank and YNAB
 
 ### Installation
 
@@ -109,6 +111,49 @@ I found that using this tool to identify which dates don't match works well, & t
 
 - [ ] Improved split transaction handling
 - [ ] Working on myself to reconcile daily/weekly <3 
+
+## 🔧 Troubleshooting  
+
+### **I can't figure out how to run this app on my computer!!**  
+No worries! Here's a quick checklist:  
+✅ **Make sure Node.js is installed** – Run `node -v` in your terminal. If it errors, [install Node.js](https://nodejs.org/).  
+✅ **Check that dependencies are installed** – Run:  
+   ```sh
+   npm install
+   ```  
+✅ **Start the app** – Use:  
+   ```sh
+   npm start
+   ```  
+   This should open the tool in your browser at `http://localhost:3000`.  
+
+---
+
+### **I uploaded both CSVs, but the reconciliator didn't work!**  
+🔹 **Ensure your CSVs have the right column headers** – The app looks for standard bank fields - but only the ones I thought of off the top of my head. 
+
+🔹 **Headers not listed?** Update `src/utils/csvProcessor.js` to include them:  
+   ```js
+   const bankMapping = findRelevantColumns(bankHeaders, {
+     date: ['date', 'transaction date', 'posted date'],
+     withdrawal: ['withdrawal', 'debit', 'amount', 'payment', 'charge'],
+     deposit: ['deposit', 'credit', 'amount'],
+     description: ['description', 'payee', 'memo', 'details', 'transaction', 'name']
+   });
+   ```  
+   Add missing headers, save, and restart the app.  
+
+---
+
+### **My CSV won't upload!**  
+✅ **Check the file format** – It must be a `.csv` file. Some banks export as `.xlsx` instead—convert it by opening in Excel or Google Sheets and selecting **File → Save As → CSV**.  
+✅ **Make sure it's UTF-8 encoded** – If your file contains strange characters or won't upload, re-save it as **CSV UTF-8 (Comma Delimited)** in Excel or a text editor like VS Code.  
+✅ **Confirm the file isn't empty** – Open the CSV in a text editor to check.  
+
+Still stuck? Drop an issue on GitHub, and I'll take a look! 🚀  
+
+---
+
 
 ## Contributing
 

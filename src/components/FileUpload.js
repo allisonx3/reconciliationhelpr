@@ -73,12 +73,15 @@ function FileUpload({ onFileLoaded, label}) {
       onDragLeave={handleDragLeave}
       aria-label="File upload area"
     >
-      <p>{label}</p>
+      <label htmlFor={`file-upload-${label}`} className="file-input-label">
+        Choose CSV File
+      </label>
       <input
         type="file"
         accept=".csv"
         onChange={(e) => handleFile(e.target.files[0])}
-        id="file-upload"
+        id={`file-upload-${label}`}
+        className="file-input"
         aria-label="Choose CSV file"
       />
     </div>

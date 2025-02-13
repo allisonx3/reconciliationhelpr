@@ -1,38 +1,222 @@
+/* Base styles and variables */
 :root {
+    /* Colors */
     --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --pink-gradient: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
     --surface-color: #ffffff;
     --background-color: #f3f4f6;
     --text-primary: #1f2937;
     --text-secondary: #4b5563;
-    --accent-color: #a855f7;
+    --accent-color: #7c3aed;    /* Deeper purple for bank transactions */
     --border-color: #e5e7eb;
     --success-color: #22c55e;
     --error-color: #ef4444;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--background-color);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Typography */
-  h1, h2, h3 {
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-  }
-  
-  h1 {
-    font-size: 2rem;
-    font-weight: 600;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 500;
-  }
+    --success-text: #22c55e;
+    --success-bg: #f0fdf4;  /* Light green for light mode */
+    --secondary-accent: #db2777; /* Deeper pink for YNAB transactions */
+    --success-bg-subtle: rgba(34, 197, 94, 0.05);  /* Very light green tint */
+    --success-bg-hover: rgba(34, 197, 94, 0.1);    /* Slightly stronger on hover */
+    --error-bg-subtle: rgba(239, 68, 68, 0.08);  /* Slightly stronger red tint */
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Border radius */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+    
+    /* Add subtle matched transaction colors */
+    --matched-bank-color: #9b8bb3;    /* Muted purple */
+    --matched-ynab-color: #b88aa3;    /* Muted pink */
+    
+    /* Subtle accent colors for matched transactions */
+    --accent-muted: #4a3d6b;      /* More saturated dark purple */
+    --accent-muted-alt: #2d2d2d;  /* Much darker gray */
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --surface-color: #1a1a1a;
+    --background-color: #121212;
+    --text-primary: #f0e7ff;
+    --text-secondary: #bdb0d4;
+    --border-color: #2a2a2a;
+    --accent-color: #b66fff;
+    --success-color: #22c55e;
+    --error-color: #ef4444;
+    --success-text: #4ade80;
+    --success-bg: #2d1f3d;  /* Purple tint for dark mode */
+    --secondary-accent: #f472b6;  /* Lighter pink for dark mode */
+    --success-bg-subtle: rgba(34, 197, 94, 0.03);   /* Darker but still subtle */
+    --success-bg-hover-dark: rgba(34, 197, 94, 0.08);  /* Subtle hover for dark mode */
+    --error-bg-subtle: rgba(239, 68, 68, 0.1);  /* Even stronger for dark mode */
+    
+    /* Balanced gradients for dark mode - more muted but still colorful */
+    --primary-gradient: linear-gradient(135deg, 
+        #4c3f8c 0%,    /* Deeper indigo with some saturation */
+        #7c4e93 100%   /* Muted but rich purple */
+    );
+    --pink-gradient: linear-gradient(135deg, 
+        #8c3667 0%,    /* Deep rose with personality */
+        #a84077 100%   /* Rich magenta */
+    );
+    
+    /* Adjust shadows for dark mode */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.3);
+    
+    /* Add new hover colors with purple/pink theme */
+    --hover-bg: #2d1f3d;
+    --hover-accent: #d8b4fe;
+    
+    /* Add subtle matched transaction colors */
+    --matched-bank-color: #7c6d94;    /* Darker muted purple */
+    --matched-ynab-color: #96717f;    /* Darker muted pink */
+    
+    /* Subtle accent colors for matched transactions */
+    --accent-muted: #c4b5e6;      /* More saturated light purple */
+    --accent-muted-alt: #8a8a8a;  /* Darker gray for dark mode */
+}
+
+/* Common utility classes */
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gradient-button {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.gradient-button:hover {
+  opacity: 0.9;
+}
+
+/* Add new button style */
+.secondary-gradient-button {
+  background: var(--pink-gradient);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: opacity 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.secondary-gradient-button:hover {
+  opacity: 0.9;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  font-size: 1.2rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  background: var(--background-color);
+}
+
+/* Optional: Add a subtle glow effect for dark mode */
+[data-theme="dark"] .theme-toggle {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Optional: If you want it to be part of the header instead of floating */
+.app-header .header-content {
+    position: relative;
+}
+
+/* Base elements */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 
+               Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add styles for #root */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Update .app-wrapper */
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Update the container class */
+.container {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Typography */
+h1, h2, h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+h1 { font-size: 2rem; font-weight: 600; }
+h2 { font-size: 1.5rem; font-weight: 500; }
+h3 { font-size: 1.1rem; font-weight: 500; }
+
+/* Common card styles */
+.card {
+  background: var(--surface-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}

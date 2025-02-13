@@ -41,8 +41,9 @@
   .app-footer {
     margin-top: auto;
     padding: 1.5rem 0;
-    background: white;
+    background: var(--surface-color);
     border-top: 1px solid var(--border-color);
+    width: 100%;
   }
   
   .footer-content {
@@ -74,4 +75,12 @@
     margin: 0 auto;
     padding: 2rem;
     flex: 1;
+    box-sizing: border-box;
+  }
+
+  /* Soften header in dark mode */
+  [data-theme="dark"] .app-header {
+    background: var(--primary-gradient);
+    opacity: 0.9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
   }
