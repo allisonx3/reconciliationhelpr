@@ -158,8 +158,6 @@ Still stuck? Drop an issue on GitHub, and I'll take a look! 🚀
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on:
-- Code style
-- Development process
 - How to submit changes
 - Bug reporting
 
@@ -179,5 +177,5 @@ This project is licensed under the MIT License - see [LICENSE.md](LICENSE.md) fo
 Feel free to:
 1. Open an issue
 2. Submit a pull request
-3. Fork & adapt to your needs
+3. Use & adapt to your needs
 

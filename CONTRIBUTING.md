@@ -50,7 +50,7 @@ Some loose guidelines:
 
 ## Questions?
 
-Feel free to open an issue! I promise I won't judge if you tell me you also only reconcile every few months when you finally remember/realize your balance is wrong. 
+Feel free to open an issue! 
 
 ## Recognition
 
